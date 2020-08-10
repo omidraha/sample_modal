@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   PanelController pc = PanelController();
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<HomeBloc, HomeState>(
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         List items = [];
         if (state is HomeDataLoaded) {
-          items = (state).items;
+          items = state.items;
           print('HomeScreen.BlocBuilder: $items');
         }
 
@@ -76,10 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                         headerWidget: PanelHeaderWidget(
-                          headerContent: Text(
-                            'Click items(${items.length}) to remove',
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
+                          headerContent: BlocBuilder<HomeBloc, HomeState>(
+                              builder: (context, state) {
+                            return Text(
+                              'Click items(${items.length}) to remove',
+                              style: Theme.of(context).textTheme.headline5,
+                            );
+                          }),
                           options: PanelHeaderOptions(
                             centerTitle: true,
                             elevation: 4,

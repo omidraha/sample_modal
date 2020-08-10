@@ -8,11 +8,13 @@ class UserRepository {
     return items;
   }
 
-  void removeItem({int item}) {
+  Future<void> removeItem({int item}) async {
+    // Load from API
     items.removeAt(item);
   }
 
-  void addItem() {
-    items.add(100);
+  Future<void> addItem() async {
+    // Load from API
+    items.add(items.length);
   }
 }
