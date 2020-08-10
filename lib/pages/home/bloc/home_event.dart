@@ -9,8 +9,12 @@ abstract class HomeEvent extends Equatable {
 
 class LoadHomeData extends HomeEvent {}
 
-class ItemClicked extends HomeEvent {
+class AddItemClicked extends HomeEvent {
+  AddItemClicked();
+}
+
+class RemoveItemClicked extends HomeEvent {
   final int item;
 
-  ItemClicked({this.item});
+  RemoveItemClicked({this.item});
 }

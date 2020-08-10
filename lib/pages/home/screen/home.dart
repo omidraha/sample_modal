@@ -16,18 +16,19 @@ class _HomeScreenState extends State<HomeScreen> {
   PanelController pc = PanelController();
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-        builder: (BuildContext context, state) {
-      print('HomeScreen.BlocBuilder: $state');
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) => pc.rebuild(then: pc.expand),
+      child: BlocBuilder<HomeBloc, HomeState>(
+          builder: (BuildContext context, state) {
+        print('HomeScreen.BlocBuilder: $state');
 
-      List items = [];
-      if (state is HomeDataLoaded) {
-        items = (state).items;
-        print('HomeScreen.BlocBuilder: $items');
-      }
+        List items = [];
+        if (state is HomeDataLoaded) {
+          items = (state).items;
+          print('HomeScreen.BlocBuilder: $items');
+        }
 
-      return SafeArea(
-        child: Scaffold(
+        return Scaffold(
           body: Center(
             child: RaisedButton(
               child: Text('Home'),
@@ -47,21 +48,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           autoSizeExpanded: true, headerSizeIsClosed: true),
                       duration: Duration(milliseconds: 500),
                       initialState: InitialPanelState.expanded,
+
                       //
                       content: PanelContent(
                         panelContent: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: items.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return InkWell(
-                                child: ListTile(
-                                  title: Text('Item : ${items[index]}'),
-                                ),
-                                onTap: () {
-                                  print('ListView.itemBuilder.InkWell.onTap');
-                                  BlocProvider.of<HomeBloc>(context)
-                                      .add(ItemClicked(item: index));
+                          BlocBuilder<HomeBloc, HomeState>(
+                            builder: (context, state) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: items.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return InkWell(
+                                    child: ListTile(
+                                      title: Text('Item : ${items[index]}'),
+                                    ),
+                                    onTap: () {
+                                      print(
+                                          'ListView.itemBuilder.InkWell.onTap');
+                                      BlocProvider.of<HomeBloc>(context)
+                                          .add(RemoveItemClicked(item: index));
+                                    },
+                                  );
                                 },
                               );
                             },
@@ -77,6 +85,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             elevation: 4,
                             forceElevated: true,
                             primary: false,
+                            trailing: [
+                              IconButton(
+                                onPressed: () =>
+                                    BlocProvider.of<HomeBloc>(context)
+                                        .add(AddItemClicked()),
+                                icon: Icon(Icons.add),
+                              )
+                            ],
                           ),
                           onTap: () => pc.currentState == PanelState.closed
                               ? pc.expand()
@@ -91,8 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

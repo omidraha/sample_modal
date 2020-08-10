@@ -8,7 +8,11 @@ class UserRepository {
     return items;
   }
 
-  Future<void> removeItem({int item}) {
+  void removeItem({int item}) {
     items.removeAt(item);
+  }
+
+  void addItem() {
+    items.add(100);
   }
 }
