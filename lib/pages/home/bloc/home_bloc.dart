@@ -20,8 +20,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       items = await userRepository.getItems();
     }
 
-    if (event is ItemClicked) {
-      await userRepository.removeItem(item: event.item);
+    if (event is AddItemClicked) {
+      userRepository.addItem();
+    }
+
+    if (event is RemoveItemClicked) {
+      userRepository.removeItem(item: event.item);
     }
 
     print('HomeBloc.items: $items');
